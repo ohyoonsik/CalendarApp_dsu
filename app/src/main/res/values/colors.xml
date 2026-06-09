@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary_color">#2196F3</color>
-    <color name="primary_dark_color">#1976D2</color>
-    <color name="accent_color">#FF4081</color>
-    <color name="black">#000000</color>
+    <!-- Neutral palette -->
+    <color name="bg">#FAF9F6</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_alt">#F4F2EC</color>
+    <color name="ink">#1C1B19</color>
+    <color name="ink_soft">#74716A</color>
+    <color name="ink_faint">#AAA59C</color>
+    <color name="line">#ECE9E1</color>
+    <color name="line_soft">#F3F1EB</color>
+
+    <!-- Accent (Haru indigo-blue) -->
+    <color name="accent">#4071B9</color>
+    <color name="accent_soft">#E7F1FF</color>
+    <color name="accent_dim">#1F4071B9</color> <!-- 12% alpha -->
     <color name="white">#FFFFFF</color>
-    <color name="gray">#757575</color>
-    <color name="light_gray">#BDBDBD</color>
-    <color name="very_light_gray">#F5F5F5</color>
-    <color name="background_color">#FAFAFA</color>
-    <color name="surface_color">#FFFFFF</color>
+
+    <!-- Weekend -->
+    <color name="weekend_sun">#D55753</color>
+    <color name="weekend_sat">#4B7BC0</color>
+
+    <!-- Categories -->
+    <color name="cat_work">#4174BF</color>
+    <color name="cat_work_soft">#E2F0FF</color>
+    <color name="cat_personal">#3F9B65</color>
+    <color name="cat_personal_soft">#DAF7E3</color>
+    <color name="cat_health">#D78032</color>
+    <color name="cat_health_soft">#FFE7CE</color>
+    <color name="cat_social">#AC5FAA</color>
+    <color name="cat_social_soft">#FEE6FC</color>
 </resources>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Event card in the day's agenda list (RecyclerView rv_agenda). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/space_sm"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_card"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="12dp">
+
+    <View
+        android:id="@+id/cat_bar"
+        android:layout_width="@dimen/cat_bar_width"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/bg_cat_bar"
+        android:backgroundTint="@color/cat_work" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="제먹입니다"
+            android:textColor="@color/ink"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="09:30–10:00"
+                android:textColor="@color/ink_soft"
+                android:textSize="@dimen/text_meta" />
+
+            <TextView
+                android:id="@+id/tv_place"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/space_sm"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="테스트 글자입니다"
+                android:textColor="@color/ink_soft"
+                android:textSize="@dimen/text_meta" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_cat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_sm"
+        android:background="@drawable/bg_pill"
+        android:backgroundTint="@color/cat_work_soft"
+        android:paddingHorizontal="9dp"
+        android:paddingVertical="3dp"
+        tools:text="업무"
+        android:textColor="@color/cat_work"
+        android:textSize="@dimen/text_caption"
+        android:textStyle="bold" />
+</LinearLayout>

@@ -1,17 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- One day cell in the month grid (GridLayoutManager spanCount=7).
+     In the adapter:
+       • set tv_day background to @drawable/circle_today + white text when today,
+         or root background to @drawable/bg_day_selected when selected.
+       • show 1–3 dots and tint each with the category color. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="@dimen/cell_height"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center_horizontal"
+    android:paddingTop="@dimen/space_xs"
+    android:background="@android:color/transparent">
 
     <TextView
-        android:id="@+id/day_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="1"
-        android:textSize="16sp"
+        android:id="@+id/tv_day"
+        android:layout_width="@dimen/day_circle"
+        android:layout_height="@dimen/day_circle"
         android:gravity="center"
-        android:textColor="@color/black" />
+        android:text="9"
+        android:textSize="15sp"
+        android:textColor="@color/ink" />
 
+    <LinearLayout
+        android:id="@+id/dots"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <View android:id="@+id/dot1" android:layout_width="@dimen/event_dot" android:layout_height="@dimen/event_dot"
+            android:layout_marginHorizontal="1.5dp" android:background="@drawable/dot"
+            android:backgroundTint="@color/cat_work" android:visibility="gone" />
+        <View android:id="@+id/dot2" android:layout_width="@dimen/event_dot" android:layout_height="@dimen/event_dot"
+            android:layout_marginHorizontal="1.5dp" android:background="@drawable/dot"
+            android:backgroundTint="@color/cat_social" android:visibility="gone" />
+        <View android:id="@+id/dot3" android:layout_width="@dimen/event_dot" android:layout_height="@dimen/event_dot"
+            android:layout_marginHorizontal="1.5dp" android:background="@drawable/dot"
+            android:backgroundTint="@color/cat_health" android:visibility="gone" />
+    </LinearLayout>
 </LinearLayout>

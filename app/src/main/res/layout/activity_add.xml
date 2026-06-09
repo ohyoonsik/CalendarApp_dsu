@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 일정 추가/수정
+     EventDetailActivity.java findViewById ID:
+       et_title, et_location, et_memo, btn_cancel, btn_save, btn_delete,
+       tv_header_title, tv_start_datetime, btn_start_date, btn_start_time,
+       tv_end_datetime, btn_end_date, btn_end_time,
+       btn_repeat (tv_repeat),
+       카테고리 칩: chip_work, chip_personal, chip_health, chip_social -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/space_sm"
+        android:paddingVertical="@dimen/space_sm">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="취소"
+            android:textColor="@color/ink_soft"
+            android:textSize="@dimen/text_label" />
+
+        <TextView
+            android:id="@+id/tv_header_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="새 일정"
+            android:textColor="@color/ink"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="저장"
+            android:textColor="@color/accent"
+            android:textSize="@dimen/text_label"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/space_screen"
+            android:paddingTop="@dimen/space_lg"
+            android:paddingBottom="@dimen/space_lg">
+
+            <!-- 제목 -->
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="제목"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/ink"
+                android:textColorHint="@color/ink_faint"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold"
+                android:importantForAutofill="no" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/space_sm"
+                android:layout_marginBottom="@dimen/space_md"
+                android:background="@color/accent" />
+
+            <!-- 시작 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="@dimen/space_sm">
+
+                <ImageView android:layout_width="19dp" android:layout_height="19dp"
+                    android:src="@drawable/ic_calendar" app:tint="@color/ink_soft" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:minWidth="44dp" android:layout_marginStart="12dp"
+                    android:text="시작" android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" />
+                <TextView android:id="@+id/tv_start_datetime"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:gravity="end"
+                    android:textColor="@color/ink" android:textSize="@dimen/text_body" android:textStyle="bold"
+                    tools:text="6월 9일 · 오후 1:00" />
+
+                <com.google.android.material.button.MaterialButton android:id="@+id/btn_start_date"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="40dp" android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
+                    android:insetTop="0dp" android:insetBottom="0dp"
+                    android:minWidth="0dp" android:minHeight="0dp"
+                    app:icon="@drawable/ic_calendar" app:iconSize="19dp" app:iconTint="@color/accent"
+                    android:contentDescription="시작 날짜" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/btn_start_time"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="40dp" android:layout_height="40dp"
+                    android:insetTop="0dp" android:insetBottom="0dp"
+                    android:minWidth="0dp" android:minHeight="0dp"
+                    app:icon="@drawable/ic_clock" app:iconSize="19dp" app:iconTint="@color/accent"
+                    android:contentDescription="시작 시간" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+            <!-- 종료 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="@dimen/space_sm">
+
+                <ImageView android:layout_width="19dp" android:layout_height="19dp"
+                    android:src="@drawable/ic_clock" app:tint="@color/ink_soft" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:minWidth="44dp" android:layout_marginStart="12dp"
+                    android:text="종료" android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" />
+                <TextView android:id="@+id/tv_end_datetime"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:gravity="end"
+                    android:textColor="@color/ink" android:textSize="@dimen/text_body" android:textStyle="bold"
+                    tools:text="6월 9일 · 오후 3:00" />
+
+                <com.google.android.material.button.MaterialButton android:id="@+id/btn_end_date"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="40dp" android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
+                    android:insetTop="0dp" android:insetBottom="0dp"
+                    android:minWidth="0dp" android:minHeight="0dp"
+                    app:icon="@drawable/ic_calendar" app:iconSize="19dp" app:iconTint="@color/accent"
+                    android:contentDescription="종료 날짜" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/btn_end_time"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="40dp" android:layout_height="40dp"
+                    android:insetTop="0dp" android:insetBottom="0dp"
+                    android:minWidth="0dp" android:minHeight="0dp"
+                    app:icon="@drawable/ic_clock" app:iconSize="19dp" app:iconTint="@color/accent"
+                    android:contentDescription="종료 시간" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+            <!-- 반복 -->
+            <LinearLayout
+                android:id="@+id/btn_repeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingVertical="14dp">
+
+                <ImageView android:layout_width="19dp" android:layout_height="19dp"
+                    android:src="@drawable/ic_repeat" app:tint="@color/ink_soft" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:minWidth="44dp" android:layout_marginStart="12dp"
+                    android:text="반복" android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" />
+                <TextView android:id="@+id/tv_repeat"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:gravity="end"
+                    android:text="안 함"
+                    android:textColor="@color/ink_faint" android:textSize="@dimen/text_body" android:textStyle="bold" />
+                <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_chevron_right" app:tint="@color/ink_faint" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+            <!-- 장소 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="@dimen/space_sm">
+
+                <ImageView android:layout_width="19dp" android:layout_height="19dp"
+                    android:src="@drawable/ic_pin" app:tint="@color/ink_soft" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:minWidth="44dp" android:layout_marginStart="12dp"
+                    android:text="장소" android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" />
+                <EditText android:id="@+id/et_location"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:background="@null" android:gravity="end"
+                    android:hint="장소 추가" android:inputType="text" android:maxLines="1"
+                    android:textColor="@color/ink" android:textColorHint="@color/ink_faint"
+                    android:textSize="@dimen/text_body" android:textStyle="bold"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <!-- 카테고리 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView android:layout_width="18dp" android:layout_height="18dp"
+                    android:src="@drawable/ic_tag" app:tint="@color/ink_soft" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:text="카테고리" android:textColor="@color/ink_soft"
+                    android:textSize="@dimen/text_label" android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:orientation="horizontal">
+
+                <!-- 업무 -->
+                <LinearLayout android:id="@+id/chip_work"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:clickable="true" android:focusable="true"
+                    android:background="@drawable/bg_pill_outline"
+                    android:paddingHorizontal="14dp" android:paddingVertical="8dp"
+                    android:layout_marginEnd="@dimen/space_sm">
+                    <View android:id="@+id/dot_work"
+                        android:layout_width="8dp" android:layout_height="8dp"
+                        android:background="@drawable/dot" android:backgroundTint="@color/cat_work" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp" android:text="업무"
+                        android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 개인 -->
+                <LinearLayout android:id="@+id/chip_personal"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:clickable="true" android:focusable="true"
+                    android:background="@drawable/bg_pill_outline"
+                    android:paddingHorizontal="14dp" android:paddingVertical="8dp"
+                    android:layout_marginEnd="@dimen/space_sm">
+                    <View android:id="@+id/dot_personal"
+                        android:layout_width="8dp" android:layout_height="8dp"
+                        android:background="@drawable/dot" android:backgroundTint="@color/cat_personal" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp" android:text="개인"
+                        android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 건강 -->
+                <LinearLayout android:id="@+id/chip_health"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:clickable="true" android:focusable="true"
+                    android:background="@drawable/bg_pill_outline"
+                    android:paddingHorizontal="14dp" android:paddingVertical="8dp"
+                    android:layout_marginEnd="@dimen/space_sm">
+                    <View android:id="@+id/dot_health"
+                        android:layout_width="8dp" android:layout_height="8dp"
+                        android:background="@drawable/dot" android:backgroundTint="@color/cat_health" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp" android:text="건강"
+                        android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 약속 -->
+                <LinearLayout android:id="@+id/chip_social"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:clickable="true" android:focusable="true"
+                    android:background="@drawable/bg_pill_outline"
+                    android:paddingHorizontal="14dp" android:paddingVertical="8dp">
+                    <View android:id="@+id/dot_social"
+                        android:layout_width="8dp" android:layout_height="8dp"
+                        android:background="@drawable/dot" android:backgroundTint="@color/cat_social" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp" android:text="약속"
+                        android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 메모 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView android:layout_width="18dp" android:layout_height="18dp"
+                    android:src="@drawable/ic_note" app:tint="@color/ink_soft" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:text="메모" android:textColor="@color/ink_soft"
+                    android:textSize="@dimen/text_label" android:textStyle="bold" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:background="@drawable/bg_field_filled"
+                android:gravity="top"
+                android:hint="메모를 입력하세요"
+                android:inputType="textMultiLine"
+                android:minHeight="64dp"
+                android:padding="@dimen/space_md"
+                android:textColor="@color/ink"
+                android:textColorHint="@color/ink_faint"
+                android:textSize="@dimen/text_label"
+                android:importantForAutofill="no" />
+
+            <!-- 삭제 버튼 — 편집 모드에서만 표시 -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:text="일정 삭제"
+                android:textColor="@color/weekend_sun"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 타임라인 일정 카드 (rv_timeline). 마지막 아이템은 line GONE. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <!-- 시간 거터 -->
+    <LinearLayout
+        android:layout_width="42dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:paddingTop="1dp">
+
+        <TextView android:id="@+id/tv_start"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold" />
+        <TextView android:id="@+id/tv_end"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="@color/ink_faint" android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- 커넥터 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="14dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <View android:id="@+id/node"
+            android:layout_width="@dimen/timeline_node" android:layout_height="@dimen/timeline_node"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/dot" android:backgroundTint="@color/accent" />
+        <View android:id="@+id/line"
+            android:layout_width="2dp" android:layout_height="0dp" android:layout_weight="1"
+            android:layout_marginTop="3dp"
+            android:background="@color/line" />
+    </LinearLayout>
+
+    <!-- 카드 -->
+    <LinearLayout
+        android:id="@+id/card_event"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginBottom="18dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="11dp">
+
+        <TextView android:id="@+id/tv_title"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/ink" android:textSize="@dimen/text_body" android:textStyle="bold" />
+
+        <LinearLayout android:id="@+id/place_row"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="5dp" android:orientation="horizontal"
+            android:gravity="center_vertical" android:visibility="gone">
+            <ImageView android:layout_width="13dp" android:layout_height="13dp"
+                android:src="@drawable/ic_pin" app:tint="@color/ink_faint" />
+            <TextView android:id="@+id/tv_place"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/ink_soft" android:textSize="@dimen/text_meta" />
+        </LinearLayout>
+
+        <TextView android:id="@+id/tv_cat"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
+            android:background="@drawable/bg_pill"
+            android:paddingHorizontal="9dp" android:paddingVertical="3dp"
+            android:textSize="@dimen/text_caption" android:textStyle="bold"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

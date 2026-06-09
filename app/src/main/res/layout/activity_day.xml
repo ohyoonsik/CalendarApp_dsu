@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 일간 상세 — DayActivity.java
+     rv_timeline = LinearLayoutManager + item_event_timeline -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/space_sm"
+        android:paddingVertical="@dimen/space_sm">
+
+        <ImageButton android:id="@+id/btn_back"
+            android:layout_width="40dp" android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless" android:padding="9dp"
+            android:src="@drawable/ic_arrow_left" app:tint="@color/ink"
+            android:contentDescription="뒤로" />
+
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="horizontal"
+            android:gravity="center_vertical" android:layout_marginStart="@dimen/space_xs">
+
+            <TextView android:id="@+id/tv_date"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="@color/ink" android:textSize="18sp" android:textStyle="bold"
+                tools:text="6월 9일" />
+            <TextView android:id="@+id/tv_weekday"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:textColor="@color/ink_soft" android:textSize="@dimen/text_label"
+                tools:text="화요일" />
+            <TextView android:id="@+id/tv_today_badge"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:background="@drawable/bg_pill" android:backgroundTint="@color/accent_dim"
+                android:paddingHorizontal="8dp" android:paddingVertical="2dp"
+                android:text="@string/today"
+                android:textColor="@color/accent" android:textSize="@dimen/text_caption"
+                android:textStyle="bold" android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageButton android:id="@+id/btn_add"
+            android:layout_width="40dp" android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless" android:padding="9dp"
+            android:src="@drawable/ic_plus" app:tint="@color/accent"
+            android:contentDescription="새 일정" />
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_screen">
+
+            <TextView android:id="@+id/label_events"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/ink_faint" android:textSize="@dimen/text_meta"
+                android:textStyle="bold"
+                tools:text="일정 · 4" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_timeline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_event_timeline" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

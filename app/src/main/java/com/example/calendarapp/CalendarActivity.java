@@ -2,137 +2,185 @@ package com.example.calendarapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.GridView;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CalendarActivity extends AppCompatActivity {
-    
-    private TextView monthYearTextView;
-    private GridView calendarGridView;
-    private RecyclerView eventsRecyclerView;
-    private Button prevMonthButton;
-    private Button nextMonthButton;
-    private Button addEventButton;
-    
+
+    private TextView tvMonth, tvYear, tvAgendaDate, tvTodayBadge, tvAgendaCount;
+    private RecyclerView rvCalendar, rvAgenda;
+    private ImageButton btnPrev, btnNext;
+
     private CalendarDayAdapter calendarDayAdapter;
     private EventAdapter eventAdapter;
     private EventRepository eventRepository;
-    
+
     private long currentMonthTime;
-    private List<Event> eventList = new ArrayList<>();
-    
+    private long selectedDayTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-        
-        initializeViews();
-        initializeAdapters();
-        initializeRepository();
-        setupListeners();
-        
+
         currentMonthTime = System.currentTimeMillis();
-        displayCalendar();
-        displayEvents();
-    }
-    
-    private void initializeViews() {
-        monthYearTextView = findViewById(R.id.month_year);
-        calendarGridView = findViewById(R.id.calendar_grid);
-        eventsRecyclerView = findViewById(R.id.events_recycler);
-        prevMonthButton = findViewById(R.id.prev_month_button);
-        nextMonthButton = findViewById(R.id.next_month_button);
-        addEventButton = findViewById(R.id.add_event_button);
-    }
-    
-    private void initializeAdapters() {
-        calendarDayAdapter = new CalendarDayAdapter(this);
-        calendarGridView.setAdapter(calendarDayAdapter);
-        
-        eventAdapter = new EventAdapter();
-        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        eventsRecyclerView.setAdapter(eventAdapter);
-    }
-    
-    private void initializeRepository() {
+        selectedDayTime = System.currentTimeMillis();
+
+        initViews();
+        initAdapters();
         eventRepository = new EventRepository(this);
+        setupListeners();
+
+        displayCalendar();
+        displayAgenda(selectedDayTime);
     }
-    
-    private void setupListeners() {
-        prevMonthButton.setOnClickListener(v -> {
-            currentMonthTime = DateUtils.addMonths(currentMonthTime, -1);
-            displayCalendar();
-            displayEvents();
+
+    private void initViews() {
+        tvMonth = findViewById(R.id.tv_month);
+        tvYear = findViewById(R.id.tv_year);
+        tvAgendaDate = findViewById(R.id.tv_agenda_date);
+        tvTodayBadge = findViewById(R.id.tv_today_badge);
+        tvAgendaCount = findViewById(R.id.tv_agenda_count);
+        rvCalendar = findViewById(R.id.rv_calendar);
+        rvAgenda = findViewById(R.id.rv_agenda);
+        btnPrev = findViewById(R.id.btn_prev);
+        btnNext = findViewById(R.id.btn_next);
+    }
+
+    private void initAdapters() {
+        calendarDayAdapter = new CalendarDayAdapter(day -> {
+            selectedDayTime = day.getTimeInMillis();
+            calendarDayAdapter.setSelectedDay(selectedDayTime);
+            displayAgenda(selectedDayTime);
         });
-        
-        nextMonthButton.setOnClickListener(v -> {
-            currentMonthTime = DateUtils.addMonths(currentMonthTime, 1);
-            displayCalendar();
-            displayEvents();
-        });
-        
-        addEventButton.setOnClickListener(v -> {
+        rvCalendar.setLayoutManager(new GridLayoutManager(this, 7));
+        rvCalendar.setAdapter(calendarDayAdapter);
+
+        eventAdapter = new EventAdapter(event -> {
             Intent intent = new Intent(CalendarActivity.this, EventDetailActivity.class);
+            intent.putExtra(EventDetailActivity.EXTRA_EVENT_ID, event.id);
             startActivityForResult(intent, 1);
         });
+        rvAgenda.setLayoutManager(new LinearLayoutManager(this));
+        rvAgenda.setAdapter(eventAdapter);
     }
-    
+
+    private void setupListeners() {
+        btnPrev.setOnClickListener(v -> {
+            currentMonthTime = DateUtils.addMonths(currentMonthTime, -1);
+            displayCalendar();
+        });
+
+        btnNext.setOnClickListener(v -> {
+            currentMonthTime = DateUtils.addMonths(currentMonthTime, 1);
+            displayCalendar();
+        });
+
+        View btnToday = findViewById(R.id.btn_today);
+        btnToday.setOnClickListener(v -> {
+            currentMonthTime = System.currentTimeMillis();
+            selectedDayTime = System.currentTimeMillis();
+            calendarDayAdapter.setSelectedDay(selectedDayTime);
+            displayCalendar();
+            displayAgenda(selectedDayTime);
+        });
+
+        View btnAdd = findViewById(R.id.btn_add);
+        btnAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(CalendarActivity.this, EventDetailActivity.class);
+            intent.putExtra(EventDetailActivity.EXTRA_DAY_TIME, selectedDayTime);
+            startActivityForResult(intent, 1);
+        });
+
+        View agendaHeader = findViewById(R.id.agenda_header);
+        agendaHeader.setOnClickListener(v -> {
+            Intent intent = new Intent(CalendarActivity.this, DayActivity.class);
+            intent.putExtra(DayActivity.EXTRA_DAY_TIME, selectedDayTime);
+            startActivityForResult(intent, 2);
+        });
+    }
+
     private void displayCalendar() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentMonthTime);
-        
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        
-        String monthName = CalendarUtils.getMonthName(month);
-        monthYearTextView.setText(monthName + " " + year);
-        
-        List<CalendarUtils.CalendarDay> calendarDays = CalendarUtils.getCalendarDays(currentMonthTime);
-        calendarDayAdapter.updateCalendarDays(calendarDays);
-    }
-    
-    private void displayEvents() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentMonthTime);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        long monthStart = DateUtils.getStartOfDay(calendar.getTimeInMillis());
-        
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        long monthEnd = DateUtils.getEndOfDay(calendar.getTimeInMillis());
-        
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(currentMonthTime);
+        tvMonth.setText((cal.get(Calendar.MONTH) + 1) + "월");
+        tvYear.setText(String.valueOf(cal.get(Calendar.YEAR)));
+
+        List<CalendarUtils.CalendarDay> days = CalendarUtils.getCalendarDays(currentMonthTime);
+        calendarDayAdapter.updateCalendarDays(days);
+        calendarDayAdapter.setSelectedDay(selectedDayTime);
+
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        long monthStart = DateUtils.getStartOfDay(cal.getTimeInMillis());
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        long monthEnd = DateUtils.getEndOfDay(cal.getTimeInMillis());
+
         eventRepository.getEventsByDateRange(monthStart, monthEnd, new EventRepository.OnEventsLoadListener() {
             @Override
             public void onEventsLoaded(List<Event> events) {
-                eventList.clear();
-                eventList.addAll(events);
-                eventAdapter.updateEvents(eventList);
+                Set<String> daysWithEvents = new HashSet<>();
+                for (Event e : events) {
+                    daysWithEvents.add(DateUtils.formatDate(e.startTime));
+                }
+                calendarDayAdapter.setDaysWithEvents(daysWithEvents);
             }
-            
+
+            @Override
+            public void onError(String errorMessage) {}
+        });
+    }
+
+    private void displayAgenda(long dayTime) {
+        tvAgendaDate.setText(formatAgendaDate(dayTime));
+        tvTodayBadge.setVisibility(DateUtils.isToday(dayTime) ? View.VISIBLE : View.GONE);
+
+        long dayStart = DateUtils.getStartOfDay(dayTime);
+        long dayEnd = DateUtils.getEndOfDay(dayTime);
+
+        eventRepository.getEventsByDateRange(dayStart, dayEnd, new EventRepository.OnEventsLoadListener() {
+            @Override
+            public void onEventsLoaded(List<Event> events) {
+                eventAdapter.updateEvents(events);
+                tvAgendaCount.setText(events.size() + "건");
+            }
+
             @Override
             public void onError(String errorMessage) {
                 Toast.makeText(CalendarActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
-    
+
+    private String formatAgendaDate(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeInMillis);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        String[] weekdays = {"일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"};
+        String weekday = weekdays[cal.get(Calendar.DAY_OF_WEEK) - 1];
+        return month + "월 " + day + "일 " + weekday;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            displayEvents();
+        if (resultCode == RESULT_OK && (requestCode == 1 || requestCode == 2)) {
+            displayCalendar();
+            displayAgenda(selectedDayTime);
         }
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="space_screen">18dp</dimen>
+    <dimen name="space_lg">16dp</dimen>
+    <dimen name="space_md">14dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_xs">4dp</dimen>
+
+    <!-- Radius -->
+    <dimen name="radius_card">14dp</dimen>
+    <dimen name="radius_chip">100dp</dimen>
+    <dimen name="radius_sheet">20dp</dimen>
+    <dimen name="radius_field">12dp</dimen>
+
+    <!-- Components -->
+    <dimen name="cell_height">52dp</dimen>
+    <dimen name="day_circle">27dp</dimen>
+    <dimen name="event_dot">5dp</dimen>
+    <dimen name="cat_dot">8dp</dimen>
+    <dimen name="fab_size">58dp</dimen>
+    <dimen name="bottom_nav_height">68dp</dimen>
+    <dimen name="checkbox_size">22dp</dimen>
+    <dimen name="timeline_node">11dp</dimen>
+    <dimen name="cat_bar_width">4dp</dimen>
+
+    <!-- Type scale (sp) -->
+    <dimen name="text_display">25sp</dimen>
+    <dimen name="text_title">22sp</dimen>
+    <dimen name="text_section">17sp</dimen>
+    <dimen name="text_body">16sp</dimen>
+    <dimen name="text_label">14sp</dimen>
+    <dimen name="text_meta">13sp</dimen>
+    <dimen name="text_caption">11sp</dimen>
+</resources>

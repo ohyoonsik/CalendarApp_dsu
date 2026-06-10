@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Haru" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Brand -->
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/accent_soft</item>
+        <item name="colorOnPrimaryContainer">@color/accent</item>
+
+        <!-- Surfaces -->
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surface_alt</item>
+        <item name="colorOnSurface">@color/ink</item>
+        <item name="colorOnSurfaceVariant">@color/ink_soft</item>
+        <item name="colorOutline">@color/line</item>
+        <item name="colorOutlineVariant">@color/line_soft</item>
+
+        <!-- System bars -->
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">?attr/isLightTheme</item>
+
+        <!-- Default font: drop pretendard.ttf into res/font/ and uncomment -->
+        <!-- <item name="android:fontFamily">@font/pretendard</item> -->
+    </style>
+
+    <!-- Filter chip used on the To-do screen -->
+    <style name="Haru.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="chipCornerRadius">@dimen/radius_chip</item>
+        <item name="chipBackgroundColor">@color/surface</item>
+        <item name="chipStrokeColor">@color/line</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@color/ink_soft</item>
+    </style>
+
+    <!-- Rounded-square FAB (matches the prototype) -->
+    <style name="ShapeAppearanceOverlay.Haru.Fab" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+</resources>

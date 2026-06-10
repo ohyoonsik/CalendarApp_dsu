@@ -11,20 +11,17 @@ public class CalendarUtils {
         public int month;
         public int year;
         public boolean isCurrentMonth;
-        public boolean hasEvent;
         
         public CalendarDay(int date, int month, int year, boolean isCurrentMonth) {
             this.date = date;
             this.month = month;
             this.year = year;
             this.isCurrentMonth = isCurrentMonth;
-            this.hasEvent = false;
         }
         
         public long getTimeInMillis() {
             Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month, date, 0, 0, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(year, month, date);
             return calendar.getTimeInMillis();
         }
     }

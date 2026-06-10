@@ -6,13 +6,13 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Event.class}, version = 1, exportSchema = false)
+@Database(entities = {Event.class}, version = 3, exportSchema = false)
 public abstract class EventDatabase extends RoomDatabase {
-    
+
     public abstract EventDao eventDao();
-    
+
     private static volatile EventDatabase instance;
-    
+
     public static EventDatabase getInstance(Context context) {
         if (instance == null) {
             synchronized (EventDatabase.class) {
@@ -21,7 +21,7 @@ public abstract class EventDatabase extends RoomDatabase {
                             context.getApplicationContext(),
                             EventDatabase.class,
                             "calendar_database"
-                    ).build();
+                    ).fallbackToDestructiveMigration().build();
                 }
             }
         }

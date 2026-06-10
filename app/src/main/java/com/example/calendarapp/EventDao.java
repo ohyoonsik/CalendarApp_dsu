@@ -31,4 +31,10 @@ public interface EventDao {
     
     @Query("SELECT * FROM events WHERE title LIKE '%' || :keyword || '%' ORDER BY startTime ASC")
     List<Event> searchEventsByTitle(String keyword);
+
+    @Query("DELETE FROM events WHERE repeatGroupId = :groupId")
+    void deleteByGroupId(String groupId);
+
+    @Query("SELECT * FROM events WHERE repeatGroupId = :groupId")
+    List<Event> getEventsByGroupId(String groupId);
 }

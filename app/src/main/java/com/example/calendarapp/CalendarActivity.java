@@ -133,7 +133,7 @@ public class CalendarActivity extends AppCompatActivity {
                 for (Event e : events) {
                     daysWithEvents.add(DateUtils.formatDate(e.startTime));
                 }
-                calendarDayAdapter.setDaysWithEvents(daysWithEvents);
+                runOnUiThread(() -> calendarDayAdapter.setDaysWithEvents(daysWithEvents));
             }
 
             @Override
@@ -151,13 +151,16 @@ public class CalendarActivity extends AppCompatActivity {
         eventRepository.getEventsByDateRange(dayStart, dayEnd, new EventRepository.OnEventsLoadListener() {
             @Override
             public void onEventsLoaded(List<Event> events) {
-                eventAdapter.updateEvents(events);
-                tvAgendaCount.setText(events.size() + "건");
+                runOnUiThread(() -> {
+                    eventAdapter.updateEvents(events);
+                    tvAgendaCount.setText(events.size() + "건");
+                });
             }
 
             @Override
             public void onError(String errorMessage) {
-                Toast.makeText(CalendarActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                runOnUiThread(() ->
+                    Toast.makeText(CalendarActivity.this, errorMessage, Toast.LENGTH_SHORT).show());
             }
         });
     }

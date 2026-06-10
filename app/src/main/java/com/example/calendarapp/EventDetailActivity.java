@@ -1,11 +1,17 @@
 package com.example.calendarapp;
 
 import android.app.AlertDialog;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -41,6 +47,10 @@ public class EventDetailActivity extends AppCompatActivity {
     private LinearLayout btnRepeat;
     private TextView tvRepeat;
 
+    // 알림 행
+    private LinearLayout btnAlarm;
+    private TextView tvAlarm;
+
     // 카테고리 칩 (커스텀 LinearLayout)
     private LinearLayout chipWork;
     private LinearLayout chipPersonal;
@@ -53,6 +63,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private long endTime;
     private String selectedCategory = "none";
     private String selectedRepeat = "none";
+    private int selectedAlarm = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +72,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         initializeViews();
         eventRepository = new EventRepository(this);
+        requestNotificationPermission();
 
         long dayTime = getIntent().getLongExtra(EXTRA_DAY_TIME, -1L);
         if (dayTime != -1L) {
@@ -87,6 +99,7 @@ public class EventDetailActivity extends AppCompatActivity {
             setupListeners();
             updateDateTimeDisplay();
             updateRepeatDisplay();
+            updateAlarmDisplay();
         }
     }
 
@@ -106,6 +119,8 @@ public class EventDetailActivity extends AppCompatActivity {
         deleteButton = findViewById(R.id.btn_delete);
         btnRepeat = findViewById(R.id.btn_repeat);
         tvRepeat = findViewById(R.id.tv_repeat);
+        btnAlarm = findViewById(R.id.btn_alarm);
+        tvAlarm = findViewById(R.id.tv_alarm);
         chipWork = findViewById(R.id.chip_work);
         chipPersonal = findViewById(R.id.chip_personal);
         chipHealth = findViewById(R.id.chip_health);
@@ -126,11 +141,13 @@ public class EventDetailActivity extends AppCompatActivity {
                         locationEditText.setText(event.location);
                         selectedCategory = event.category != null ? event.category : "none";
                         selectedRepeat = event.repeatType != null ? event.repeatType : "none";
+                        selectedAlarm = event.alarmOffset;
                         applyCategoryChips();
                     }
                     setupListeners();
                     updateDateTimeDisplay();
                     updateRepeatDisplay();
+                    updateAlarmDisplay();
                 });
             }
 
@@ -151,6 +168,7 @@ public class EventDetailActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(v -> deleteEvent());
 
         btnRepeat.setOnClickListener(v -> showRepeatDialog());
+        btnAlarm.setOnClickListener(v -> showAlarmDialog());
 
         chipWork.setOnClickListener(v -> selectCategory("work"));
         chipPersonal.setOnClickListener(v -> selectCategory("personal"));
@@ -228,6 +246,41 @@ public class EventDetailActivity extends AppCompatActivity {
         tvRepeat.setTextColor(color);
     }
 
+    // ── 알림 ────────────────────────────────────────────────────────────────────
+
+    private static final String[] ALARM_LABELS = {"없음", "이벤트 시간", "5분 전", "10분 전", "15분 전", "30분 전", "1시간 전", "1일 전"};
+    private static final int[]    ALARM_VALUES = {-1,    0,            5,       10,       15,       30,       60,        1440};
+
+    private void showAlarmDialog() {
+        int current = 0;
+        for (int i = 0; i < ALARM_VALUES.length; i++) {
+            if (ALARM_VALUES[i] == selectedAlarm) { current = i; break; }
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("알림")
+                .setSingleChoiceItems(ALARM_LABELS, current, (d, which) -> {
+                    selectedAlarm = ALARM_VALUES[which];
+                    updateAlarmDisplay();
+                    d.dismiss();
+                })
+                .setNegativeButton("취소", null)
+                .show();
+    }
+
+    private void updateAlarmDisplay() {
+        for (int i = 0; i < ALARM_VALUES.length; i++) {
+            if (ALARM_VALUES[i] == selectedAlarm) {
+                tvAlarm.setText(ALARM_LABELS[i]);
+                break;
+            }
+        }
+        int color = selectedAlarm == -1
+                ? getColor(R.color.ink_faint)
+                : getColor(R.color.ink);
+        tvAlarm.setTextColor(color);
+    }
+
     // ── 날짜/시간 피커 ───────────────────────────────────────────────────────────
 
     private void showStartDatePicker() {
@@ -300,6 +353,9 @@ public class EventDetailActivity extends AppCompatActivity {
     // ── 저장/삭제 ────────────────────────────────────────────────────────────────
 
     private void saveEvent() {
+        // 알림 설정 시 권한 확인
+        if (selectedAlarm >= 0 && !checkAlarmPermissions()) return;
+
         String title = titleEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
         String location = locationEditText.getText().toString().trim();
@@ -321,6 +377,7 @@ public class EventDetailActivity extends AppCompatActivity {
             existingEvent.endTime = endTime;
             existingEvent.category = selectedCategory;
             existingEvent.repeatType = selectedRepeat;
+            existingEvent.alarmOffset = selectedAlarm;
             eventRepository.updateEvent(existingEvent, new EventRepository.OnEventOperationListener() {
                 @Override
                 public void onSuccess(String message) {
@@ -339,6 +396,7 @@ public class EventDetailActivity extends AppCompatActivity {
             Event event = new Event(title, description, location, startTime, endTime);
             event.category = selectedCategory;
             event.repeatType = selectedRepeat;
+            event.alarmOffset = selectedAlarm;
             eventRepository.insertEventWithRepeat(event, new EventRepository.OnEventOperationListener() {
                 @Override
                 public void onSuccess(String message) {
@@ -391,6 +449,55 @@ public class EventDetailActivity extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(EventDetailActivity.this, errorMessage, Toast.LENGTH_SHORT).show());
             }
         };
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 100);
+            }
+        }
+    }
+
+    /**
+     * 알람 관련 권한 상태를 확인하고, 부족하면 안내 다이얼로그를 표시한다.
+     * @return 모든 권한이 충족되면 true
+     */
+    private boolean checkAlarmPermissions() {
+        // 1) 정확한 알람 권한 (Android 12+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            if (!am.canScheduleExactAlarms()) {
+                new AlertDialog.Builder(this)
+                        .setTitle("알림 권한 필요")
+                        .setMessage("정확한 알림을 받으려면 '알람 및 리마인더' 권한이 필요합니다.\n설정으로 이동하시겠어요?")
+                        .setPositiveButton("설정으로", (d, w) -> {
+                            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
+                return false;
+            }
+        }
+
+        // 2) 알림 표시 권한 (Android 13+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                new AlertDialog.Builder(this)
+                        .setTitle("알림 권한 필요")
+                        .setMessage("알림을 표시하려면 알림 권한이 필요합니다.")
+                        .setPositiveButton("권한 요청", (d, w) ->
+                                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 100))
+                        .setNegativeButton("취소", null)
+                        .show();
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

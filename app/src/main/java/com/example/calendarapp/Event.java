@@ -25,6 +25,9 @@ public class Event {
     // UUID that groups repeating instances; null for non-repeating events
     public String repeatGroupId;
 
+    // 알림: -1=없음, 0=이벤트시간, 5/10/15/30/60/1440=N분전
+    public int alarmOffset = -1;
+
     public Event() {
     }
 
@@ -38,5 +41,6 @@ public class Event {
         this.updatedAt = System.currentTimeMillis();
         this.category = "none";
         this.repeatType = "none";
+        this.alarmOffset = -1;
     }
 }

@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 public class EventRepository {
 
+    private final Context context;
     private final EventDao eventDao;
     private final ExecutorService executorService;
 
@@ -29,6 +30,7 @@ public class EventRepository {
     }
 
     public EventRepository(Context context) {
+        this.context = context.getApplicationContext();
         EventDatabase database = EventDatabase.getInstance(context);
         this.eventDao = database.eventDao();
         this.executorService = Executors.newFixedThreadPool(2);
@@ -56,7 +58,11 @@ public class EventRepository {
             try {
                 if ("none".equals(event.repeatType) || event.repeatType == null) {
                     long id = eventDao.insertEvent(event);
-                    if (id > 0 && listener != null) listener.onSuccess("일정이 추가되었습니다.");
+                    if (id > 0) {
+                        event.id = (int) id;
+                        AlarmScheduler.schedule(context, event);
+                        if (listener != null) listener.onSuccess("일정이 추가되었습니다.");
+                    }
                     return;
                 }
 
@@ -67,15 +73,18 @@ public class EventRepository {
                 long duration = event.endTime - event.startTime;
 
                 for (int i = 0; i < count; i++) {
+                    long instStart = addInterval(event.startTime, event.repeatType, i);
                     Event inst = new Event(
                             event.title, event.description, event.location,
-                            addInterval(event.startTime, event.repeatType, i),
-                            addInterval(event.startTime, event.repeatType, i) + duration
+                            instStart, instStart + duration
                     );
                     inst.category = event.category;
                     inst.repeatType = event.repeatType;
                     inst.repeatGroupId = groupId;
-                    eventDao.insertEvent(inst);
+                    inst.alarmOffset = event.alarmOffset;
+                    long instId = eventDao.insertEvent(inst);
+                    inst.id = (int) instId;
+                    AlarmScheduler.schedule(context, inst);
                 }
 
                 if (listener != null) listener.onSuccess("반복 일정이 추가되었습니다.");
@@ -110,9 +119,13 @@ public class EventRepository {
     public void updateEvent(Event event, OnEventOperationListener listener) {
         executorService.execute(() -> {
             try {
+                AlarmScheduler.cancel(context, event.id);
                 event.updatedAt = System.currentTimeMillis();
                 int result = eventDao.updateEvent(event);
-                if (result > 0 && listener != null) listener.onSuccess("일정이 수정되었습니다.");
+                if (result > 0) {
+                    AlarmScheduler.schedule(context, event);
+                    if (listener != null) listener.onSuccess("일정이 수정되었습니다.");
+                }
             } catch (Exception e) {
                 if (listener != null) listener.onError("오류: " + e.getMessage());
             }
@@ -122,6 +135,7 @@ public class EventRepository {
     public void deleteEvent(Event event, OnEventOperationListener listener) {
         executorService.execute(() -> {
             try {
+                AlarmScheduler.cancel(context, event.id);
                 int result = eventDao.deleteEvent(event);
                 if (result > 0 && listener != null) listener.onSuccess("일정이 삭제되었습니다.");
             } catch (Exception e) {
@@ -133,6 +147,8 @@ public class EventRepository {
     public void deleteEventGroup(String groupId, OnEventOperationListener listener) {
         executorService.execute(() -> {
             try {
+                List<Event> group = eventDao.getEventsByGroupId(groupId);
+                for (Event e : group) AlarmScheduler.cancel(context, e.id);
                 eventDao.deleteByGroupId(groupId);
                 if (listener != null) listener.onSuccess("반복 일정이 모두 삭제되었습니다.");
             } catch (Exception e) {

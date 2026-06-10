@@ -34,4 +34,7 @@ public interface EventDao {
 
     @Query("DELETE FROM events WHERE repeatGroupId = :groupId")
     void deleteByGroupId(String groupId);
+
+    @Query("SELECT * FROM events WHERE repeatGroupId = :groupId")
+    List<Event> getEventsByGroupId(String groupId);
 }

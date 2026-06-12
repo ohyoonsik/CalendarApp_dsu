@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Neutral palette (Dark Mode) -->
+    <color name="bg">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="surface_alt">#2C2C2C</color>
+    <color name="ink">#E1E1E1</color>
+    <color name="ink_soft">#A0A0A0</color>
+    <color name="ink_faint">#666666</color>
+    <color name="line">#333333</color>
+    <color name="line_soft">#252525</color>
+
+    <!-- Accent (Keep or slightly adjust for dark) -->
+    <color name="accent">#6BA4FF</color> <!-- Lighter blue for better contrast on dark -->
+    <color name="accent_soft">#1A2B44</color>
+    <color name="accent_dim">#336BA4FF</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Weekend (Slightly more vibrant for dark bg) -->
+    <color name="weekend_sun">#FF6B66</color>
+    <color name="weekend_sat">#7DAFFF</color>
+
+    <!-- Categories (Adjusted for dark mode contrast) -->
+    <color name="cat_work">#6BA4FF</color>
+    <color name="cat_work_soft">#1A2B44</color>
+    <color name="cat_personal">#57C281</color>
+    <color name="cat_personal_soft">#1B3324</color>
+    <color name="cat_health">#FFB06B</color>
+    <color name="cat_health_soft">#332314</color>
+    <color name="cat_social">#D68ED4</color>
+    <color name="cat_social_soft">#331432</color>
+
+    <!-- Legacy compatibility aliases (matching light mode names but with dark colors) -->
+    <color name="primary_color">@color/accent</color>
+    <color name="background_color">@color/bg</color>
+    <color name="very_light_gray">@color/surface_alt</color>
+    <color name="light_gray">@color/line</color>
+    <color name="gray">@color/ink_soft</color>
+    <color name="black">@color/ink</color>
+</resources>

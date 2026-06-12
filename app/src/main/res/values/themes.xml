@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.Haru" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.Haru" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Brand -->
         <item name="colorPrimary">@color/accent</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -20,8 +20,8 @@
         <!-- System bars -->
         <item name="android:statusBarColor">@color/bg</item>
         <item name="android:navigationBarColor">@color/surface</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">?attr/isLightTheme</item>
 
         <!-- Default font: drop pretendard.ttf into res/font/ and uncomment -->
         <!-- <item name="android:fontFamily">@font/pretendard</item> -->

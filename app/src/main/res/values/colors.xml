@@ -29,4 +29,12 @@
     <color name="cat_health_soft">#FFE7CE</color>
     <color name="cat_social">#AC5FAA</color>
     <color name="cat_social_soft">#FEE6FC</color>
+
+    <!-- Legacy compatibility aliases (to be replaced with semantic colors) -->
+    <color name="primary_color">@color/accent</color>
+    <color name="background_color">@color/bg</color>
+    <color name="very_light_gray">@color/surface_alt</color>
+    <color name="light_gray">@color/line</color>
+    <color name="gray">@color/ink_soft</color>
+    <color name="black">@color/ink</color>
 </resources>

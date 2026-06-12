@@ -28,6 +28,11 @@
             <TextView android:id="@+id/tv_year" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_sm" tools:text="2026" android:textColor="@color/ink_faint" android:textSize="15sp" />
 
+            <ImageButton android:id="@+id/btn_theme" android:layout_width="40dp" android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless" android:padding="9dp"
+                android:src="@drawable/ic_moon" app:tint="@color/ink_soft" android:contentDescription="테마 전환" />
+
             <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
 
             <ImageButton android:id="@+id/btn_prev" android:layout_width="40dp" android:layout_height="40dp"
@@ -40,6 +45,7 @@
             <ImageButton android:id="@+id/btn_next" android:layout_width="40dp" android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless" android:padding="9dp"
                 android:src="@drawable/ic_chevron_right" app:tint="@color/ink_soft" android:contentDescription="다음 달" />
+
             <ImageButton android:id="@+id/btn_add" android:layout_width="40dp" android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless" android:padding="9dp"
                 android:src="@drawable/ic_plus" app:tint="@color/accent" android:contentDescription="새 일정" />

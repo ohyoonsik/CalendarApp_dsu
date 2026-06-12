@@ -1,12 +1,14 @@
 package com.example.calendarapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +22,7 @@ public class CalendarActivity extends AppCompatActivity {
 
     private TextView tvMonth, tvYear, tvAgendaDate, tvTodayBadge, tvAgendaCount;
     private RecyclerView rvCalendar, rvAgenda;
-    private ImageButton btnPrev, btnNext;
+    private ImageButton btnPrev, btnNext, btnTheme;
 
     private CalendarDayAdapter calendarDayAdapter;
     private EventAdapter eventAdapter;
@@ -56,6 +58,7 @@ public class CalendarActivity extends AppCompatActivity {
         rvAgenda = findViewById(R.id.rv_agenda);
         btnPrev = findViewById(R.id.btn_prev);
         btnNext = findViewById(R.id.btn_next);
+        btnTheme = findViewById(R.id.btn_theme);
     }
 
     private void initAdapters() {
@@ -77,6 +80,21 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        updateThemeIcon();
+        btnTheme.setOnClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences("theme_prefs", MODE_PRIVATE);
+            boolean isDarkMode = prefs.getBoolean("is_dark_mode", false);
+            isDarkMode = !isDarkMode;
+            prefs.edit().putBoolean("is_dark_mode", isDarkMode).apply();
+
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+            updateThemeIcon();
+        });
+
         btnPrev.setOnClickListener(v -> {
             currentMonthTime = DateUtils.addMonths(currentMonthTime, -1);
             displayCalendar();
@@ -181,6 +199,16 @@ public class CalendarActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && (requestCode == 1 || requestCode == 2)) {
             displayCalendar();
             displayAgenda(selectedDayTime);
+        }
+    }
+
+    private void updateThemeIcon() {
+        SharedPreferences prefs = getSharedPreferences("theme_prefs", MODE_PRIVATE);
+        boolean isDarkMode = prefs.getBoolean("is_dark_mode", false);
+        if (isDarkMode) {
+            btnTheme.setImageResource(R.drawable.ic_sun);
+        } else {
+            btnTheme.setImageResource(R.drawable.ic_moon);
         }
     }
 

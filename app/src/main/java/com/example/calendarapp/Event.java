@@ -28,6 +28,12 @@ public class Event {
     // 알림: -1=없음, 0=이벤트시간, 5/10/15/30/60/1440=N분전
     public int alarmOffset = -1;
 
+    // 커스텀 색상 (category == "custom" 인 경우 사용)
+    public Integer customColor;
+
+    // 커스텀 카테고리 이름
+    public String customCategoryName;
+
     public Event() {
     }
 

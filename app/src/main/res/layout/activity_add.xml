@@ -324,13 +324,44 @@
                     android:orientation="horizontal" android:gravity="center_vertical"
                     android:clickable="true" android:focusable="true"
                     android:background="@drawable/bg_pill_outline"
-                    android:paddingHorizontal="14dp" android:paddingVertical="8dp">
+                    android:paddingHorizontal="14dp" android:paddingVertical="8dp"
+                    android:layout_marginEnd="@dimen/space_sm">
                     <View android:id="@+id/dot_social"
                         android:layout_width="8dp" android:layout_height="8dp"
                         android:background="@drawable/dot" android:backgroundTint="@color/cat_social" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:layout_marginStart="7dp" android:text="약속"
                         android:textColor="@color/ink_soft" android:textSize="@dimen/text_label" android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 기타 (커스텀) -->
+                <LinearLayout
+                    android:id="@+id/chip_custom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_pill_outline"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp">
+
+                    <View
+                        android:id="@+id/dot_custom"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:background="@drawable/dot"
+                        android:backgroundTint="@color/ink_faint" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp"
+                        android:text="+ "
+                        android:textColor="@color/ink_soft"
+                        android:textSize="@dimen/text_label"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 

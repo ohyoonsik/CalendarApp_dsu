@@ -12,9 +12,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,12 +59,15 @@ public class EventDetailActivity extends AppCompatActivity {
     private LinearLayout chipPersonal;
     private LinearLayout chipHealth;
     private LinearLayout chipSocial;
+    private LinearLayout chipCustom;
 
     private EventRepository eventRepository;
     private Event existingEvent;
     private long startTime;
     private long endTime;
     private String selectedCategory = "none";
+    private Integer selectedCustomColor = null;
+    private String selectedCustomCategoryName = null;
     private String selectedRepeat = "none";
     private int selectedAlarm = -1;
 
@@ -125,6 +131,7 @@ public class EventDetailActivity extends AppCompatActivity {
         chipPersonal = findViewById(R.id.chip_personal);
         chipHealth = findViewById(R.id.chip_health);
         chipSocial = findViewById(R.id.chip_social);
+        chipCustom = findViewById(R.id.chip_custom);
     }
 
     private void loadEvent(int eventId) {
@@ -140,6 +147,8 @@ public class EventDetailActivity extends AppCompatActivity {
                         descriptionEditText.setText(event.description);
                         locationEditText.setText(event.location);
                         selectedCategory = event.category != null ? event.category : "none";
+                        selectedCustomColor = event.customColor;
+                        selectedCustomCategoryName = event.customCategoryName;
                         selectedRepeat = event.repeatType != null ? event.repeatType : "none";
                         selectedAlarm = event.alarmOffset;
                         applyCategoryChips();
@@ -174,6 +183,7 @@ public class EventDetailActivity extends AppCompatActivity {
         chipPersonal.setOnClickListener(v -> selectCategory("personal"));
         chipHealth.setOnClickListener(v -> selectCategory("health"));
         chipSocial.setOnClickListener(v -> selectCategory("social"));
+        chipCustom.setOnClickListener(v -> showColorPickerDialog());
     }
 
     // ── 카테고리 ────────────────────────────────────────────────────────────────
@@ -192,6 +202,17 @@ public class EventDetailActivity extends AppCompatActivity {
         applyChipState(chipPersonal, "personal", getColor(R.color.cat_personal));
         applyChipState(chipHealth,   "health",   getColor(R.color.cat_health));
         applyChipState(chipSocial,   "social",   getColor(R.color.cat_social));
+        
+        int customColor = selectedCustomColor != null ? selectedCustomColor : getColor(R.color.ink_faint);
+        applyChipState(chipCustom,   "custom",   customColor);
+        
+        // 커스텀 이름 반영
+        TextView tvCustom = (TextView) chipCustom.getChildAt(1);
+        if ("custom".equals(selectedCategory) && selectedCustomCategoryName != null && !selectedCustomCategoryName.isEmpty()) {
+            tvCustom.setText(selectedCustomCategoryName);
+        } else {
+            tvCustom.setText("기타");
+        }
     }
 
     private void applyChipState(LinearLayout chip, String category, int catColor) {
@@ -279,6 +300,109 @@ public class EventDetailActivity extends AppCompatActivity {
                 ? getColor(R.color.ink_faint)
                 : getColor(R.color.ink);
         tvAlarm.setTextColor(color);
+    }
+
+    // ── 색상 선택 ────────────────────────────────────────────────────────────────
+
+    private void showColorPickerDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_rgb_picker, null);
+        EditText etCatName = dialogView.findViewById(R.id.et_category_name);
+        View preview = dialogView.findViewById(R.id.view_preview);
+        TextView tvHex = dialogView.findViewById(R.id.tv_hex);
+        SeekBar seekR = dialogView.findViewById(R.id.seek_r);
+        SeekBar seekG = dialogView.findViewById(R.id.seek_g);
+        SeekBar seekB = dialogView.findViewById(R.id.seek_b);
+        EditText etRVal = dialogView.findViewById(R.id.et_r_val);
+        EditText etGVal = dialogView.findViewById(R.id.et_g_val);
+        EditText etBVal = dialogView.findViewById(R.id.et_b_val);
+
+        final boolean[] isInternalUpdate = {false};
+
+        // 초기값 설정
+        etCatName.setText(selectedCustomCategoryName);
+        int initialColor = selectedCustomColor != null ? selectedCustomColor : Color.GRAY;
+        seekR.setProgress(Color.red(initialColor));
+        seekG.setProgress(Color.green(initialColor));
+        seekB.setProgress(Color.blue(initialColor));
+
+        Runnable updatePreview = () -> {
+            int r = seekR.getProgress();
+            int g = seekG.getProgress();
+            int b = seekB.getProgress();
+            int color = Color.rgb(r, g, b);
+            preview.setBackgroundTintList(ColorStateList.valueOf(color));
+            tvHex.setText(String.format("#%06X", (0xFFFFFF & color)));
+        };
+
+        SeekBar.OnSeekBarChangeListener seekBarListener = new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    isInternalUpdate[0] = true;
+                    if (seekBar == seekR) etRVal.setText(String.valueOf(progress));
+                    else if (seekBar == seekG) etGVal.setText(String.valueOf(progress));
+                    else if (seekBar == seekB) etBVal.setText(String.valueOf(progress));
+                    isInternalUpdate[0] = false;
+                }
+                updatePreview.run();
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        };
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (isInternalUpdate[0]) return;
+                try {
+                    int val = Integer.parseInt(s.toString());
+                    if (val > 255) {
+                        val = 255;
+                        isInternalUpdate[0] = true;
+                        s.replace(0, s.length(), "255");
+                        isInternalUpdate[0] = false;
+                    }
+                    if (etRVal.getEditableText() == s) seekR.setProgress(val);
+                    else if (etGVal.getEditableText() == s) seekG.setProgress(val);
+                    else if (etBVal.getEditableText() == s) seekB.setProgress(val);
+                } catch (NumberFormatException e) {
+                    // 비어있는 경우 등
+                }
+            }
+        };
+
+        seekR.setOnSeekBarChangeListener(seekBarListener);
+        seekG.setOnSeekBarChangeListener(seekBarListener);
+        seekB.setOnSeekBarChangeListener(seekBarListener);
+        etRVal.addTextChangedListener(textWatcher);
+        etGVal.addTextChangedListener(textWatcher);
+        etBVal.addTextChangedListener(textWatcher);
+
+        // 초기 상태 반영
+        etRVal.setText(String.valueOf(Color.red(initialColor)));
+        etGVal.setText(String.valueOf(Color.green(initialColor)));
+        etBVal.setText(String.valueOf(Color.blue(initialColor)));
+        updatePreview.run();
+
+        new AlertDialog.Builder(this)
+                .setTitle("카테고리 설정")
+                .setView(dialogView)
+                .setPositiveButton("확인", (dialog, which) -> {
+                    selectedCustomCategoryName = etCatName.getText().toString().trim();
+                    selectedCustomColor = Color.rgb(seekR.getProgress(), seekG.getProgress(), seekB.getProgress());
+                    selectedCategory = "custom";
+                    applyCategoryChips();
+                })
+                .setNeutralButton("선택 안함", (dialog, which) -> {
+                    selectedCategory = "none";
+                    selectedCustomColor = null;
+                    selectedCustomCategoryName = null;
+                    applyCategoryChips();
+                })
+                .setNegativeButton("취소", null)
+                .show();
     }
 
     // ── 날짜/시간 피커 ───────────────────────────────────────────────────────────
@@ -376,6 +500,8 @@ public class EventDetailActivity extends AppCompatActivity {
             existingEvent.startTime = startTime;
             existingEvent.endTime = endTime;
             existingEvent.category = selectedCategory;
+            existingEvent.customColor = selectedCustomColor;
+            existingEvent.customCategoryName = selectedCustomCategoryName;
             existingEvent.repeatType = selectedRepeat;
             existingEvent.alarmOffset = selectedAlarm;
             eventRepository.updateEvent(existingEvent, new EventRepository.OnEventOperationListener() {
@@ -395,6 +521,8 @@ public class EventDetailActivity extends AppCompatActivity {
         } else {
             Event event = new Event(title, description, location, startTime, endTime);
             event.category = selectedCategory;
+            event.customColor = selectedCustomColor;
+            event.customCategoryName = selectedCustomCategoryName;
             event.repeatType = selectedRepeat;
             event.alarmOffset = selectedAlarm;
             eventRepository.insertEventWithRepeat(event, new EventRepository.OnEventOperationListener() {
